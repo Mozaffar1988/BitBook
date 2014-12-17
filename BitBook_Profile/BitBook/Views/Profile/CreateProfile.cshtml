@@ -1,0 +1,171 @@
+﻿@model IEnumerable<BitBook.Models.Profile>  
+@{
+    ViewBag.Title = "CreateProfile";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div class="container">
+    <h2>Create Profile</h2>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2">
+        Update Info
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel2">Personal Info</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="UpdateInfo2From">
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">First Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputFirstName32" name="inputFirstName32">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">Last Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputLastName32" name="inputLastName32">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">Country</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="country" name="country">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">Religion</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="religion" name="religion">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">Birthday</label>
+
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="birthday" name="birthday" placeholder="YYYY/MM/DD" />
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                                <label for="inputPassword3" class="col-sm-2 control-label">Gender</label>
+                                <div class="col-sm-10">
+                                    <input type="radio" name="inlineRadio1" id="inlineRadio1" value="Male"> Male
+                                </div>
+                                <div class="col-sm-10">
+                                    <input type="radio" name="inlineRadio1" id="inlineRadio2" value="Female"> Female
+                                </div>
+                            </div>*@
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<table class="table" id="mytable">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Country)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Religion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Birthday)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Religion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Birthday)
+            </td>
+             <td>
+                @Html.ActionLink("Edit", "EditProfile", new { id = item.Id }) 
+               
+            </td>
+        </tr>
+    }
+
+</table>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function() {
+            $("#UpdateInfo2From").submit(function () {
+
+                var firstName = $("#inputFirstName32").val();
+                var lastName = $("#inputLastName32").val();
+                var country = $("#country").val();
+                var religion = $("#religion").val();
+                var birthday = $("#birthday").val();
+                // var gender = $("#inlineRadio1").val();
+                //var gender2 = $("#inlineRadio2").val();
+
+                // alert(firstName + "\n" + lastName + "\n" + country + "\n" + religion + "\n" + birthday );
+                var mydata = { firstName: firstName,lastName:lastName, country:country,religion:religion,birthday:birthday};
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("InsertPersonalInfo", "Profile")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(mydata),
+                    dataType: "json",
+                    success: function (data) {
+                        alert("Status post successfull");
+
+                        $('#myModal2').modal('hide');
+                        $('#mytable tr:last').after('<tr><td>' + firstName + '</td><td>' + lastName + '</td><td>'+country +'</td><td>'+ religion +'</td><td>'+birthday+'</td></tr>');
+                    },
+                });
+                return false;
+            });
+        });
+    </script>
+
+}
+
+
+
+
